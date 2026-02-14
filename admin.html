@@ -1,140 +1,216 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>Panel Admin - Valentine</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="css/admin.css" />
-</head>
-<body>
-  <div class="admin-container">
-    <header class="admin-header">
-      <h1>🎨 Panel Admin Valentine</h1>
-      <div class="admin-mobile-hint" id="adminMobileHint">
-        <strong>📱 Akses dari HP:</strong> Harus pakai <code>:3000</code>. Contoh: <code id="adminUrlExample">http://192.168.1.10:3000/admin.html</code> — ganti dengan IP komputer kamu. Tanpa <code>:3000</code> akan muncul error PHP (bukan project ini).
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-secondary" onclick="window.location.href='index.html'">👁️ Lihat Website</button>
-        <button class="btn btn-primary" onclick="saveAll()">💾 Simpan Semua</button>
-        <button class="btn btn-outline" onclick="exportData()">📤 Export Data</button>
-        <label class="btn btn-outline" style="margin:0;cursor:pointer;">📥 Import Data<input type="file" accept=".json,application/json" id="importFile" onchange="importData(this)" style="display:none;"></label>
-        <button class="btn btn-danger" onclick="resetAll()">🔄 Reset</button>
-      </div>
-    </header>
-
-    <div class="admin-content">
-      <!-- Tab Navigation -->
-      <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('photos')">📷 Foto Galeri</button>
-        <button class="tab-btn" onclick="showTab('background')">🎨 Background</button>
-        <button class="tab-btn" onclick="showTab('music')">🎵 Musik</button>
-        <button class="tab-btn" onclick="showTab('texts')">✍️ Teks & Kata-kata</button>
-      </div>
-
-      <!-- Tab: Foto Galeri -->
-      <div id="tab-photos" class="tab-content active">
-        <div class="section-header">
-          <h2>Kelola Foto Galeri</h2>
-          <button class="btn btn-success" onclick="addPhoto()">➕ Tambah Foto</button>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Panel Admin - Valentine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body>
+    <div class="admin-container">
+      <header class="admin-header">
+        <h1>🎨 Panel Admin Valentine</h1>
+        <div class="admin-mobile-hint" id="adminMobileHint">
+          <strong>📱 Akses dari HP:</strong> Harus pakai <code>:3000</code>.
+          Contoh:
+          <code id="adminUrlExample">http://192.168.1.10:3000/admin.html</code>
+          — ganti dengan IP komputer kamu. Tanpa <code>:3000</code> akan muncul
+          error PHP (bukan project ini).
         </div>
-        <div id="photos-list" class="items-list"></div>
-      </div>
-
-      <!-- Tab: Background -->
-      <div id="tab-background" class="tab-content">
-        <div class="section-header">
-          <h2>Background Foto</h2>
+        <div class="header-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="window.location.href = 'index.html'"
+          >
+            👁️ Lihat Website
+          </button>
+          <button class="btn btn-primary" onclick="saveAll()">
+            💾 Simpan Semua
+          </button>
+          <button class="btn btn-outline" onclick="exportData()">
+            📤 Export Data
+          </button>
+          <label class="btn btn-outline" style="margin: 0; cursor: pointer"
+            >📥 Import Data<input
+              type="file"
+              accept=".json,application/json"
+              id="importFile"
+              onchange="importData(this)"
+              style="display: none"
+          /></label>
+          <button class="btn btn-danger" onclick="resetAll()">🔄 Reset</button>
         </div>
-        <div class="form-group">
-          <label>Upload Background Foto (akan digunakan dengan efek love bergerak)</label>
-          <div class="upload-area" id="bg-upload-area">
-            <input type="file" id="bg-image-input" accept="image/*" onchange="previewBackground(this)" />
-            <div class="upload-placeholder">
-              <span>📤 Klik untuk upload atau drag & drop</span>
-              <small>Format: JPG, PNG (disarankan ukuran besar)</small>
+      </header>
+
+      <div class="admin-content">
+        <!-- Tab Navigation -->
+        <div class="tabs">
+          <button class="tab-btn active" onclick="showTab('photos')">
+            📷 Foto Galeri
+          </button>
+          <button class="tab-btn" onclick="showTab('background')">
+            🎨 Background
+          </button>
+          <button class="tab-btn" onclick="showTab('music')">🎵 Musik</button>
+          <button class="tab-btn" onclick="showTab('texts')">
+            ✍️ Teks & Kata-kata
+          </button>
+        </div>
+
+        <!-- Tab: Foto Galeri -->
+        <div id="tab-photos" class="tab-content active">
+          <div class="section-header">
+            <h2>Kelola Foto Galeri</h2>
+            <button class="btn btn-success" onclick="addPhoto()">
+              ➕ Tambah Foto
+            </button>
+          </div>
+          <div id="photos-list" class="items-list"></div>
+        </div>
+
+        <!-- Tab: Background -->
+        <div id="tab-background" class="tab-content">
+          <div class="section-header">
+            <h2>Background Foto</h2>
+          </div>
+          <div class="form-group">
+            <label
+              >Upload Background Foto (akan digunakan dengan efek love
+              bergerak)</label
+            >
+            <div class="upload-area" id="bg-upload-area">
+              <input
+                type="file"
+                id="bg-image-input"
+                accept="image/*"
+                onchange="previewBackground(this)"
+              />
+              <div class="upload-placeholder">
+                <span>📤 Klik untuk upload atau drag & drop</span>
+                <small>Format: JPG, PNG (disarankan ukuran besar)</small>
+              </div>
+              <img
+                id="bg-preview"
+                class="preview-image"
+                style="display: none"
+              />
             </div>
-            <img id="bg-preview" class="preview-image" style="display:none;" />
+            <div class="form-help">
+              <p>
+                💡 Background foto akan digunakan dengan efek love bergerak dan
+                border pink
+              </p>
+            </div>
           </div>
-          <div class="form-help">
-            <p>💡 Background foto akan digunakan dengan efek love bergerak dan border pink</p>
+          <div class="form-group">
+            <label>Warna Border Pink (opsional)</label>
+            <input type="color" id="border-color" value="#ff4b8b" />
           </div>
         </div>
-        <div class="form-group">
-          <label>Warna Border Pink (opsional)</label>
-          <input type="color" id="border-color" value="#ff4b8b" />
+
+        <!-- Tab: Musik -->
+        <div id="tab-music" class="tab-content">
+          <div class="section-header">
+            <h2>Kelola Lagu</h2>
+            <button class="btn btn-success" onclick="addTrack()">
+              ➕ Tambah Lagu
+            </button>
+          </div>
+          <div id="tracks-list" class="items-list"></div>
+        </div>
+
+        <!-- Tab: Teks & Kata-kata -->
+        <div id="tab-texts" class="tab-content">
+          <div class="section-header">
+            <h2>Edit Teks & Kata-kata</h2>
+          </div>
+
+          <div class="form-section">
+            <h3>Header & Logo</h3>
+            <div class="form-group">
+              <label>Logo Text</label>
+              <input
+                type="text"
+                id="logo-text"
+                placeholder="Our Valentine Story"
+              />
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Hero Section</h3>
+            <div class="form-group">
+              <label>Tag Text</label>
+              <input
+                type="text"
+                id="tag-text"
+                placeholder="Untuk kamu, cinta terbaikku"
+              />
+            </div>
+            <div class="form-group">
+              <label>Judul Utama (Baris 1)</label>
+              <input
+                type="text"
+                id="title-line1"
+                placeholder="Happy Valentine,"
+              />
+            </div>
+            <div class="form-group">
+              <label>Judul Utama (Baris 2)</label>
+              <input
+                type="text"
+                id="title-line2"
+                placeholder="my favorite human."
+              />
+            </div>
+            <div class="form-group">
+              <label>Subtitle</label>
+              <textarea
+                id="subtitle"
+                rows="3"
+                placeholder="Ini adalah halaman kecil tempat semua momen..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Timeline</h3>
+            <div id="timeline-items" class="items-list"></div>
+            <button class="btn btn-success" onclick="addTimelineItem()">
+              ➕ Tambah Timeline
+            </button>
+          </div>
+
+          <div class="form-section">
+            <h3>Memories Cards</h3>
+            <div id="memories-items" class="items-list"></div>
+            <button class="btn btn-success" onclick="addMemoryCard()">
+              ➕ Tambah Memory Card
+            </button>
+          </div>
+
+          <div class="form-section">
+            <h3>Footer</h3>
+            <div class="form-group">
+              <label>Footer Text</label>
+              <textarea
+                id="footer-text"
+                rows="2"
+                placeholder="💗 Dibuat khusus untuk kamu..."
+              ></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Tab: Musik -->
-      <div id="tab-music" class="tab-content">
-        <div class="section-header">
-          <h2>Kelola Lagu</h2>
-          <button class="btn btn-success" onclick="addTrack()">➕ Tambah Lagu</button>
-        </div>
-        <div id="tracks-list" class="items-list"></div>
-      </div>
-
-      <!-- Tab: Teks & Kata-kata -->
-      <div id="tab-texts" class="tab-content">
-        <div class="section-header">
-          <h2>Edit Teks & Kata-kata</h2>
-        </div>
-
-        <div class="form-section">
-          <h3>Header & Logo</h3>
-          <div class="form-group">
-            <label>Logo Text</label>
-            <input type="text" id="logo-text" placeholder="Our Valentine Story" />
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h3>Hero Section</h3>
-          <div class="form-group">
-            <label>Tag Text</label>
-            <input type="text" id="tag-text" placeholder="Untuk kamu, cinta terbaikku" />
-          </div>
-          <div class="form-group">
-            <label>Judul Utama (Baris 1)</label>
-            <input type="text" id="title-line1" placeholder="Happy Valentine," />
-          </div>
-          <div class="form-group">
-            <label>Judul Utama (Baris 2)</label>
-            <input type="text" id="title-line2" placeholder="my favorite human." />
-          </div>
-          <div class="form-group">
-            <label>Subtitle</label>
-            <textarea id="subtitle" rows="3" placeholder="Ini adalah halaman kecil tempat semua momen..."></textarea>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h3>Timeline</h3>
-          <div id="timeline-items" class="items-list"></div>
-          <button class="btn btn-success" onclick="addTimelineItem()">➕ Tambah Timeline</button>
-        </div>
-
-        <div class="form-section">
-          <h3>Memories Cards</h3>
-          <div id="memories-items" class="items-list"></div>
-          <button class="btn btn-success" onclick="addMemoryCard()">➕ Tambah Memory Card</button>
-        </div>
-
-        <div class="form-section">
-          <h3>Footer</h3>
-          <div class="form-group">
-            <label>Footer Text</label>
-            <textarea id="footer-text" rows="2" placeholder="💗 Dibuat khusus untuk kamu..."></textarea>
-          </div>
-        </div>
+      <div class="admin-footer">
+        <p>
+          💡 Semua perubahan telahdisimpan di localStorage browser. Refresh
+          halaman untuk melihat perubahan.
+        </p>
       </div>
     </div>
 
-    <div class="admin-footer">
-      <p>💡 Semua perubahan disimpan di localStorage browser. Refresh halaman untuk melihat perubahan.</p>
-    </div>
-  </div>
-
-  <script src="js/admin.js"></script>
-</body>
+    <script src="js/admin.js"></script>
+  </body>
 </html>

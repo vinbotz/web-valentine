@@ -387,65 +387,74 @@ function getFromDB(key) {
   });
 }
 
-// Load data: foto & lagu dari IndexedDB dulu (bisa file besar), fallback localStorage/config
+// Load data: dulu coba dari file JSON (untuk hosting), lalu IndexedDB/localStorage/config
 function loadDataFromStorage() {
-  var savedTexts = localStorage.getItem("valentine_texts");
-  var savedBackground = localStorage.getItem("valentine_background");
-  if (savedTexts) {
-    try {
-      window.texts = JSON.parse(savedTexts);
-      applyTexts();
-    } catch (e) {}
-  }
-  if (savedBackground) {
-    try {
-      applyBackground(JSON.parse(savedBackground));
-    } catch (e) {}
-  }
+  var jsonUrl = "data/valentine-data.json";
 
-  return Promise.all([
-    getFromDB("valentine_photos").catch(function () {
-      return undefined;
-    }),
-    getFromDB("valentine_tracks").catch(function () {
-      return undefined;
-    }),
-  ]).then(function (results) {
-    var dbPhotos = results[0];
-    var dbTracks = results[1];
-    if (dbPhotos && Array.isArray(dbPhotos)) {
-      window.photos = dbPhotos;
-    } else {
-      var savedPhotos = localStorage.getItem("valentine_photos");
-      window.photos = savedPhotos
-        ? (function () {
-            try {
-              return JSON.parse(savedPhotos);
-            } catch (e) {
-              return [];
-            }
-          })()
-        : typeof photos !== "undefined"
-          ? photos
-          : [];
-    }
-    if (dbTracks && Array.isArray(dbTracks)) {
-      window.tracks = dbTracks;
-    } else {
-      var savedTracks = localStorage.getItem("valentine_tracks");
-      window.tracks = savedTracks
-        ? (function () {
-            try {
-              return JSON.parse(savedTracks);
-            } catch (e) {
-              return [];
-            }
-          })()
-        : typeof tracks !== "undefined"
-          ? tracks
-          : [];
-    }
-  });
+  return fetch(jsonUrl)
+    .then(function (res) {
+      if (res.ok) return res.json();
+      throw new Error("no json");
+    })
+    .then(function (data) {
+      if (data && typeof data === "object") {
+        window.photos = Array.isArray(data.photos) ? data.photos : (typeof photos !== "undefined" ? photos : []);
+        window.tracks = Array.isArray(data.tracks) ? data.tracks : (typeof tracks !== "undefined" ? tracks : []);
+        if (data.texts && typeof data.texts === "object") {
+          window.texts = data.texts;
+          applyTexts();
+        }
+        if (data.background && typeof data.background === "object") {
+          applyBackground(data.background);
+        }
+        return;
+      }
+      throw new Error("invalid json");
+    })
+    .catch(function () {
+      // Fallback: IndexedDB / localStorage / config
+      var savedTexts = localStorage.getItem("valentine_texts");
+      var savedBackground = localStorage.getItem("valentine_background");
+      if (savedTexts) {
+        try {
+          window.texts = JSON.parse(savedTexts);
+          applyTexts();
+        } catch (e) {}
+      }
+      if (savedBackground) {
+        try {
+          applyBackground(JSON.parse(savedBackground));
+        } catch (e) {}
+      }
+
+      return Promise.all([
+        getFromDB("valentine_photos").catch(function () { return undefined; }),
+        getFromDB("valentine_tracks").catch(function () { return undefined; }),
+      ]).then(function (results) {
+        var dbPhotos = results[0];
+        var dbTracks = results[1];
+        if (dbPhotos && Array.isArray(dbPhotos)) {
+          window.photos = dbPhotos;
+        } else {
+          var savedPhotos = localStorage.getItem("valentine_photos");
+          window.photos = savedPhotos
+            ? (function () {
+                try { return JSON.parse(savedPhotos); } catch (e) { return []; }
+              })()
+            : typeof photos !== "undefined" ? photos : [];
+        }
+        if (dbTracks && Array.isArray(dbTracks)) {
+          window.tracks = dbTracks;
+        } else {
+          var savedTracks = localStorage.getItem("valentine_tracks");
+          window.tracks = savedTracks
+            ? (function () {
+                try { return JSON.parse(savedTracks); } catch (e) { return []; }
+              })()
+            : typeof tracks !== "undefined" ? tracks : [];
+        }
+      });
+    });
 }
 
 function applyTexts() {
